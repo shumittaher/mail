@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // By default, load the inbox
   load_mailbox('inbox');
-  console.log("ok");
-
 });
 
 function compose_email() {
@@ -26,7 +24,7 @@ function compose_email() {
 
 function load_mailbox(mailbox) {
 
-  let url = "text";
+  let url = `/emails/${mailbox}`;
 
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
