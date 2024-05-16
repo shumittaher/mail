@@ -1,6 +1,17 @@
-var mailBody;
+var mailBodyCompose;
+var mailSubjectCompose;
+var mailRecipientsCompose;
+var emailsView;
+var composeView;
 
 document.addEventListener('DOMContentLoaded', function() {
+
+  //declaring query selectors
+  mailBodyCompose = document.querySelector('#compose-body');
+  mailSubjectCompose = document.querySelector('#compose-subject');
+  mailRecipientsCompose = document.querySelector('#compose-recipients');
+  emailsView = document.querySelector('#emails-view');
+  composeView = document.querySelector('#compose-view');
 
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
@@ -11,33 +22,29 @@ document.addEventListener('DOMContentLoaded', function() {
   // By default, load the inbox
   load_mailbox('inbox');
 
-
-  //declaring query selectors
-  mailBody = document.querySelector('#compose-body')
-
 });
 
 function compose_email() {
 
   // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'block';
+  emailsView.style.display = 'none';
+  composeView.style.display = 'block';
 
   // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  mailBody.value = '';
+  mailRecipientsCompose.value = '';
+  mailSubjectCompose.value = '';
+  mailBodyCompose.value = '';
 }
 
 function load_mailbox(mailbox) {
 
   
   // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
-  document.querySelector('#compose-view').style.display = 'none';
+  emailsView.style.display = 'block';
+  composeView.style.display = 'none';
   
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  emailsView.innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
   
   //fetch query
   
@@ -64,14 +71,14 @@ function ask_from_api(url) {
 
 function populate_error(mesg) {
 
-  document.querySelector('#emails-view').append(mesg)
+  emailsView.append(mesg)
   
 }
 
 function populate_emails(emails) {
 
   if (emails.length == 0) {
-    document.querySelector('#emails-view').append("No Emails Found")
+    emailsView.append("No Emails Found")
   }
   
 
