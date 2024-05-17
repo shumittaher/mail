@@ -3,7 +3,6 @@ textarea {
 }
 
 .email_row:hover {
-    border: 2px solid gray;
     background-image: linear-gradient(to right, #6e6097, #98aff0);
     color: white;
     cursor: pointer;

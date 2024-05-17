@@ -6,6 +6,11 @@ var composeView;
 var errorText;
 var boxName;
 var emailRowTable;
+var emailTable;
+var openEmailView;
+
+var lastBoxLoaded;
+
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -18,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
   errorText = document.querySelector('#errorText')
   boxName = document.querySelector('#boxName')
   emailRowTable = document.querySelector('#emailRowTable')
+  emailTable = document.querySelector('#emailTable')
+  openEmailView = document.querySelector('#openEmailView')
 
 
   // Use buttons to toggle between views
@@ -46,10 +53,14 @@ function compose_email() {
 
 function load_mailbox(mailbox) {
 
-  
+  lastBoxLoaded = mailbox
+
   // Show the mailbox and hide other views
   emailsView.style.display = 'block';
   composeView.style.display = 'none';
+  emailTable.style.display = 'block';
+  openEmailView.style.display = 'none';
+
 
   
   // Show the mailbox name
@@ -79,16 +90,19 @@ function askFromApi(url) {
 }
 
 function populateError(msg) {
-  errorText.innerText = msg
+  errorText.innerText = msg;
 }
 
 function populateEmails(emails) {
 
   if (emails.length == 0) {
     populateError("No Emails Found")
+    emailTable.style.display = 'none';
+  } else {
+    populateError("")
   }
   
-  emailRowTable.innerHTML=''
+  emailRowTable.innerHTML='';
 
   emails.forEach(email => {
     
@@ -138,11 +152,19 @@ function makeEmailRowforBox(emailObject) {
   </tr>
   `
 
-  return emailRow
+  return emailRow;
 }
 
 function openEmail(event) {
 
-  console.log("email opened")
+  composeView.style.display = 'none';
+  emailTable.style.display = 'none';
+  openEmailView.style.display = 'block';
+
+}
+
+function handleBackButton(event) {
   
+  load_mailbox(lastBoxLoaded);
+
 }
