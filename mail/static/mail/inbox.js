@@ -130,6 +130,7 @@ function handle_email_submitted(event){
       showAlert(result.error);
     } else {
       showAlert(result.message);
+      load_mailbox('inbox');
     }
   });
 }
