@@ -77,6 +77,7 @@ function askFromApi(url) {
     })
 
 }
+
 function populateError(msg) {
   errorText.innerText = msg
 }
@@ -128,13 +129,20 @@ function makeEmailRowforBox(emailObject) {
   let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
 
   const emailRow = `
-  <tr>
+  <tr onclick="openEmail(event)" class="email_row">
   <td></td>                    
   <td>${sender}</td>                    
+  <td>${recipients}</td>                    
   <td>${subject}</td>                    
   <td>${timestamp}</td>                    
-  </tr>   
+  </tr>
   `
 
   return emailRow
+}
+
+function openEmail(event) {
+
+  console.log("email opened")
+  
 }
