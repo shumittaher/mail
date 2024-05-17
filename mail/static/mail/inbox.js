@@ -3,6 +3,8 @@ var mailSubjectCompose;
 var mailRecipientsCompose;
 var emailsView;
 var composeView;
+var errorText
+var boxName
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -12,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
   mailRecipientsCompose = document.querySelector('#compose-recipients');
   emailsView = document.querySelector('#emails-view');
   composeView = document.querySelector('#compose-view');
+  errorText = document.querySelector('#errorText')
+  boxName = document.querySelector('#boxName')
+
 
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
@@ -34,6 +39,7 @@ function compose_email() {
   mailRecipientsCompose.value = '';
   mailSubjectCompose.value = '';
   mailBodyCompose.value = '';
+ 
 }
 
 function load_mailbox(mailbox) {
@@ -42,69 +48,70 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   emailsView.style.display = 'block';
   composeView.style.display = 'none';
+
   
   // Show the mailbox name
-  emailsView.innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
-  
+  boxName.innerText = `${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}`
+
   //fetch query
   
   let url = `/emails/${mailbox}`;
-  ask_from_api(url);
+  askFromApi(url);
   
 }
 
-function ask_from_api(url) {
+function askFromApi(url) {
   
   fetch(url)
   .then(response => response.json())
   .then((emails)=>{
      
     if ("error" in emails ){
-        populate_error(emails.error)
+      populateError(emails.error)
       } else {
-        populate_emails(emails)
+        populateEmails(emails);
       }
       
     })
 
 }
-
-function populate_error(mesg) {
-
-  emailsView.append(mesg)
-  
+function populateError(msg) {
+  errorText.innerText = msg
 }
 
-function populate_emails(emails) {
+function populateEmails(emails) {
 
   if (emails.length == 0) {
     emailsView.append("No Emails Found")
-  }
-  
+  } else {
 
+  }
+
+  emails.forEach(email => {
+    
+    row = makeEmailRowforBox(email)
+    emailsView.innerHTML += row;
+
+  });
 
 }
 
-function email_submitted(event){
+function handle_email_submitted(event){
+  event.preventDefault();
 
+  emailItem = makeEmailObject(mailRecipientsCompose.value, mailSubjectCompose.value, mailBodyCompose.value)
+  
   fetch('/emails', {
     method: 'POST',
-    body: JSON.stringify({
-        recipients: 'baz@example.com',
-        subject: 'Meeting time',
-        body: 'How about we meet tomorrow at 3pm?'
-    })
+    body: JSON.stringify(emailItem)
   })
   .then(response => response.json())
   .then(result => {
-      // Print result
       console.log(result);
   });
-
-  return false;
 }
 
-function make_email_object(recipients, subject, body) {
+function makeEmailObject(recipients, subject, body) {
 
   return {
     recipients: recipients,
@@ -112,4 +119,18 @@ function make_email_object(recipients, subject, body) {
     body: body
   }
   
+}
+
+function makeEmailRowforBox(emailObject) {
+
+  let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
+
+  const emailRow = `
+  <div>
+    ${sender}
+    ${subject}
+  </div>
+  `
+
+  return emailRow
 }

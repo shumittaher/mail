@@ -13,11 +13,19 @@
     <hr>
 
     <div id="emails-view">
+
+        <h3 id="boxName">
+
+        </h3>
+
+        <h5 id="errorText" class="text-center mt-3">
+        </h5>
+    
     </div>
 
     <div id="compose-view">
         <h3>New Email</h3>
-        <form id="compose-form" onsubmit="email_submitted(event)">
+        <form id="compose-form" onsubmit="handle_email_submitted(event)">
             <div class="form-group">
                 From: <input disabled class="form-control" value="{{ request.user.email }}">
             </div>
