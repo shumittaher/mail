@@ -8,6 +8,7 @@ var boxName;
 var emailRowTable;
 var emailTable;
 var openEmailView;
+var emailContent;
 
 var lastBoxLoaded;
 
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
   emailRowTable = document.querySelector('#emailRowTable')
   emailTable = document.querySelector('#emailTable')
   openEmailView = document.querySelector('#openEmailView')
+  emailContent = document.querySelector('#emailContent')
 
 
   // Use buttons to toggle between views
@@ -69,20 +71,20 @@ function load_mailbox(mailbox) {
   //fetch query
   
   let url = `/emails/${mailbox}`;
-  askFromApi(url);
+  askFromApi(url, populateEmails, populateError);
   
 }
 
-function askFromApi(url) {
+function askFromApi(url, successFunction, failureFunction) {
   
   fetch(url)
   .then(response => response.json())
-  .then((emails)=>{
+  .then((data)=>{
      
-    if ("error" in emails ){
-      populateError(emails.error)
+    if ("error" in data ){
+        failureFunction(data.error)
       } else {
-        populateEmails(emails);
+        successFunction(data);
       }
       
     })
@@ -143,7 +145,7 @@ function makeEmailRowforBox(emailObject) {
   let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
 
   const emailRow = `
-  <tr onclick="openEmail(event)" class="email_row">
+  <tr onclick="openEmail(event)" class="email_row" data-id = ${id}>
   <td></td>                    
   <td>${sender}</td>                    
   <td>${recipients}</td>                    
@@ -151,16 +153,22 @@ function makeEmailRowforBox(emailObject) {
   <td>${timestamp}</td>                    
   </tr>
   `
-
   return emailRow;
 }
 
 function openEmail(event) {
 
+  const emailId = event.target.parentNode.dataset.id
+
   composeView.style.display = 'none';
   emailTable.style.display = 'none';
   openEmailView.style.display = 'block';
 
+  const emailBody = `
+  <h5 class="my-4">Subject: </h5>
+  <p></p>
+  `
+  emailContent.innerHTML = emailBody
 }
 
 function handleBackButton(event) {
@@ -168,3 +176,4 @@ function handleBackButton(event) {
   load_mailbox(lastBoxLoaded);
 
 }
+
