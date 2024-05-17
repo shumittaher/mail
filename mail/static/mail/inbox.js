@@ -3,8 +3,9 @@ var mailSubjectCompose;
 var mailRecipientsCompose;
 var emailsView;
 var composeView;
-var errorText
-var boxName
+var errorText;
+var boxName;
+var emailRowTable;
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
   composeView = document.querySelector('#compose-view');
   errorText = document.querySelector('#errorText')
   boxName = document.querySelector('#boxName')
+  emailRowTable = document.querySelector('#emailRowTable')
 
 
   // Use buttons to toggle between views
@@ -82,15 +84,15 @@ function populateError(msg) {
 function populateEmails(emails) {
 
   if (emails.length == 0) {
-    emailsView.append("No Emails Found")
-  } else {
-
+    populateError("No Emails Found")
   }
+  
+  emailRowTable.innerHTML=''
 
   emails.forEach(email => {
     
     row = makeEmailRowforBox(email)
-    emailsView.innerHTML += row;
+    emailRowTable.innerHTML += row;
 
   });
 
@@ -126,10 +128,12 @@ function makeEmailRowforBox(emailObject) {
   let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
 
   const emailRow = `
-  <div>
-    ${sender}
-    ${subject}
-  </div>
+  <tr>
+  <td></td>                    
+  <td>${sender}</td>                    
+  <td>${subject}</td>                    
+  <td>${timestamp}</td>                    
+  </tr>   
   `
 
   return emailRow
