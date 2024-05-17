@@ -71,12 +71,12 @@ function load_mailbox(mailbox) {
   //fetch query
   
   let url = `/emails/${mailbox}`;
-  askFromApi(url, populateEmails, populateError);
+  getFromApi(url, populateEmails, populateError);
   
 }
 
-function askFromApi(url, successFunction, failureFunction) {
-  
+function getFromApi(url, successFunction, failureFunction) {
+
   fetch(url)
   .then(response => response.json())
   .then((data)=>{
@@ -126,8 +126,16 @@ function handle_email_submitted(event){
   })
   .then(response => response.json())
   .then(result => {
-      console.log(result);
+    if ("error" in result){
+      showAlert(result.error);
+    } else {
+      showAlert(result.message);
+    }
   });
+}
+
+function showAlert(message) {
+  alert(message)
 }
 
 function makeEmailObject(recipients, subject, body) {
@@ -157,18 +165,31 @@ function makeEmailRowforBox(emailObject) {
 }
 
 function openEmail(event) {
+  
+  const emailId = event.target.parentNode.dataset.id;
+  const url = `emails/${emailId}`;
 
-  const emailId = event.target.parentNode.dataset.id
+  getFromApi(url, showEmail, populateError);
+}
 
+function showEmail(emailObject) {
+
+  let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
+  
   composeView.style.display = 'none';
   emailTable.style.display = 'none';
   openEmailView.style.display = 'block';
-
+  
   const emailBody = `
-  <h5 class="my-4">Subject: </h5>
-  <p></p>
+  <div class="my-4">
+  <h6>From: ${sender}</h6>
+  <h6>To: ${recipients}</h6>
+  <h6>Subject: ${subject}</h6>
+  <h6>Time Stamp: ${timestamp}</h6>
+  </div>
+  <p>${body}</p>
   `
-  emailContent.innerHTML = emailBody
+  emailContent.innerHTML = emailBody;
 }
 
 function handleBackButton(event) {
@@ -177,3 +198,11 @@ function handleBackButton(event) {
 
 }
 
+function putRequest(emailId, actionObject){
+
+  fetch('/emails/100', {
+    method: 'PUT',
+    body: JSON.stringify(actionObject)
+  })
+
+}
