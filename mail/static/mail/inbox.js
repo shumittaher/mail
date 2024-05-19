@@ -193,11 +193,11 @@ function makeEmailRowforBox(emailObject) {
 
   const emailRow = `
   <tr onclick="openEmail(event)" class="email_row" data-id = ${id} style="background-color: ${background_color};">
-  <td></td>                    
-  <td>${sender}</td>                    
-  <td>${recipients}</td>                    
-  <td>${subject}</td>                    
-  <td>${timestamp}</td>                    
+    <td></td>                    
+    <td>${sender}</td>                    
+    <td>${recipients}</td>                    
+    <td>${subject}</td>                    
+    <td>${timestamp}</td>                    
   </tr>
   `
   return emailRow;
