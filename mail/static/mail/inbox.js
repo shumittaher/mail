@@ -61,8 +61,12 @@ function load_mailbox(mailbox) {
 
   if (mailbox === "archive"){
     archiveButton.innerText = "un-Archive";
+    archiveButton.setAttribute("data-archive-instruction", false)
+
   } else {
     archiveButton.innerText = "Archive";
+    archiveButton.setAttribute("data-archive-instruction", true)
+
   }
 
   // Show the mailbox and hide other views
@@ -230,7 +234,9 @@ function putRequest(emailId, actionObject){
 function handleArchiveButton(event) {
 
   const emailID = event.target.parentNode.dataset["emailid"];
-  putRequest(emailID, {archived:true});
+  const archiveInstruction = event.target.dataset["archiveInstruction"] === 'true'
+
+  putRequest(emailID, {archived:archiveInstruction});
 
   load_mailbox(lastBoxLoaded);
 }
