@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-function compose_email() {
+function compose_email(event, emailObject) {
 
   // Show compose view and hide other views
   emailsView.style.display = 'none';
@@ -52,6 +52,15 @@ function compose_email() {
   mailRecipientsCompose.value = '';
   mailSubjectCompose.value = '';
   mailBodyCompose.value = '';
+
+  if (emailObject){
+
+    let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
+
+    mailRecipientsCompose.value = sender;
+    mailSubjectCompose.value = 'Re: ' + subject;
+
+  };
  
 }
 
@@ -196,6 +205,8 @@ function openEmail(event) {
 function showEmail(emailObject) {
 
   let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
+  let emailObjectJason = JSON.stringify(emailObject)
+  localStorage.setItem('currentEmail', emailObjectJason)
   
   composeView.style.display = 'none';
   emailTable.style.display = 'none';
@@ -207,8 +218,8 @@ function showEmail(emailObject) {
   <div class="my-4">
   <h6>From: ${sender}</h6>
   <h6>To: ${recipients}</h6>
+  <h6 class="mb-4">Time Stamp: ${timestamp}</h6>
   <h6>Subject: ${subject}</h6>
-  <h6>Time Stamp: ${timestamp}</h6>
   </div>
   <p>${body}</p>
   `
@@ -238,5 +249,12 @@ function handleArchiveButton(event) {
 
   putRequest(emailID, {archived:archiveInstruction});
 
-  load_mailbox(lastBoxLoaded);
+  load_mailbox("inbox");
+}
+
+function handleReply(event) {
+
+  const emailObject = JSON.parse(localStorage.getItem("currentEmail"));
+  
+  compose_email(event,emailObject); 
 }
