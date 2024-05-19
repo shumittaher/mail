@@ -9,6 +9,7 @@ var emailRowTable;
 var emailTable;
 var openEmailView;
 var emailContent;
+var archiveButton
 
 var lastBoxLoaded;
 
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
   emailTable = document.querySelector('#emailTable')
   openEmailView = document.querySelector('#openEmailView')
   emailContent = document.querySelector('#emailContent')
+  archiveButton = document.querySelector('#archiveButton')
 
 
   // Use buttons to toggle between views
@@ -55,7 +57,13 @@ function compose_email() {
 
 function load_mailbox(mailbox) {
 
-  lastBoxLoaded = mailbox
+  lastBoxLoaded = mailbox;
+
+  if (mailbox === "archive"){
+    archiveButton.innerText = "un-Archive";
+  } else {
+    archiveButton.innerText = "Archive";
+  }
 
   // Show the mailbox and hide other views
   emailsView.style.display = 'block';
