@@ -153,8 +153,16 @@ function makeEmailRowforBox(emailObject) {
 
   let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
 
+  if (read){
+    var background_color = "lightgray";
+    var color = "black";
+  } else {
+    var background_color = "white";
+    var color = "black";
+  }
+
   const emailRow = `
-  <tr onclick="openEmail(event)" class="email_row" data-id = ${id}>
+  <tr onclick="openEmail(event)" class="email_row" data-id = ${id} style="background-color: ${background_color}; color: ${color};">
   <td></td>                    
   <td>${sender}</td>                    
   <td>${recipients}</td>                    
@@ -180,6 +188,8 @@ function showEmail(emailObject) {
   composeView.style.display = 'none';
   emailTable.style.display = 'none';
   openEmailView.style.display = 'block';
+
+  putRequest(id,{read:true})
   
   const emailBody = `
   <div class="my-4">
@@ -191,6 +201,7 @@ function showEmail(emailObject) {
   <p>${body}</p>
   `
   emailContent.innerHTML = emailBody;
+  openEmailView.setAttribute("data-emailId", `${id}`)
 }
 
 function handleBackButton(event) {
@@ -201,9 +212,17 @@ function handleBackButton(event) {
 
 function putRequest(emailId, actionObject){
 
-  fetch('/emails/100', {
+  fetch(`/emails/${emailId}`, {
     method: 'PUT',
     body: JSON.stringify(actionObject)
   })
 
+}
+
+function handleArchiveButton(event) {
+
+  const emailID = event.target.parentNode.dataset["emailid"];
+  putRequest(emailID, {archived:true});
+
+  load_mailbox(lastBoxLoaded);
 }
