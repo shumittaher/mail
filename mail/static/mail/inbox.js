@@ -58,8 +58,14 @@ function compose_email(event, emailObject) {
     let {archived, id, read, recipients, sender, subject, body, timestamp} = emailObject;
 
     mailRecipientsCompose.value = sender;
-    mailSubjectCompose.value = 'Re: ' + subject;
 
+    console.log(subject.slice(0,3));
+
+    if (subject.slice(0,3) !== 'Re:') {
+      mailSubjectCompose.value = 'Re: ' + subject;
+    } else {
+      mailSubjectCompose.value = subject;
+    }
   };
  
 }
