@@ -187,14 +187,12 @@ function makeEmailRowforBox(emailObject) {
 
   if (read){
     var background_color = "lightgray";
-    var color = "black";
   } else {
     var background_color = "white";
-    var color = "black";
   }
 
   const emailRow = `
-  <tr onclick="openEmail(event)" class="email_row" data-id = ${id} style="background-color: ${background_color}; color: ${color};">
+  <tr onclick="openEmail(event)" class="email_row" data-id = ${id} style="background-color: ${background_color};">
   <td></td>                    
   <td>${sender}</td>                    
   <td>${recipients}</td>                    
