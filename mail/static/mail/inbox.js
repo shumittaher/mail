@@ -106,19 +106,20 @@ function load_mailbox(mailbox) {
   
 }
 
-function getFromApi(url, successFunction, failureFunction) {
+async function getFromApi(url, successFunction, failureFunction) {
 
-  fetch(url)
-  .then(response => response.json())
-  .then((data)=>{
-     
-    if ("error" in data ){
-        failureFunction(data.error)
-      } else {
-        successFunction(data);
-      }
-      
-    })
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if ("error" in data) {
+      failureFunction(data.error);
+    } else {
+      successFunction(data);
+    }
+  } catch (error) {
+    failureFunction(error.message || "Unknown error");  // Handle general errors
+  }
 
 }
 
@@ -243,13 +244,16 @@ function handleBackButton(event) {
 
 }
 
-function putRequest(emailId, actionObject){
+async function putRequest(emailId, actionObject, forwardFunction = ()=>{}){
 
-  fetch(`/emails/${emailId}`, {
+  await fetch(`/emails/${emailId}`, {
     method: 'PUT',
     body: JSON.stringify(actionObject)
+  }).then((response) => {
+    if (response.status == '204'){
+      forwardFunction();
+    }
   })
-
 }
 
 function handleArchiveButton(event) {
@@ -257,9 +261,7 @@ function handleArchiveButton(event) {
   const emailID = event.target.parentNode.dataset["emailid"];
   const archiveInstruction = event.target.dataset["archiveInstruction"] === 'true'
 
-  putRequest(emailID, {archived:archiveInstruction});
-
-  load_mailbox("inbox");
+  putRequest(emailID, {archived:archiveInstruction}, () => load_mailbox("inbox"));
 }
 
 function handleReply(event) {
