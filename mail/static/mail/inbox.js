@@ -59,13 +59,17 @@ function compose_email(event, emailObject) {
 
     mailRecipientsCompose.value = sender;
 
-    console.log(subject.slice(0,3));
-
     if (subject.slice(0,3) !== 'Re:') {
       mailSubjectCompose.value = 'Re: ' + subject;
     } else {
       mailSubjectCompose.value = subject;
     }
+
+    mailBodyCompose.value = '\n' + '\n' + 'On ' + timestamp + ', ' + sender + ' wrote:' + '\n' + '\n' + body;
+
+    mailBodyCompose.focus();
+    mailBodyCompose.setSelectionRange(0, 0);
+
   };
  
 }
